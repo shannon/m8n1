@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+    <head>
+        <style>
+            html, body {
+                padding: 0;
+                margin: 0;
+                box-sizing: border-box;
+
+                width: 100%;
+                height: 100%;
+            }
+
+            body {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+            }
+
+            m8n1-board {
+                display: grid;
+                grid-template-columns: repeat(8, 1fr);
+                grid-template-rows: repeat(8, 1fr);
+
+                aspect-ratio: 1;
+            }
+
+            @media (orientation: landscape) {
+                m8n1-board {
+                    height: 80vh;
+                }
+            }
+
+            @media (orientation: portrait) {
+                m8n1-board {
+                    width: 80vw;
+                }
+            }
+
+            :root {
+                --space-white: #fff;
+                --space-black: #aaa;
+            }
+
+            m8n1-space[color=white] {
+                background-color: var(--space-white);
+            }
+
+            m8n1-space[color=black] {
+                background-color: var(--space-black);
+            }
+        </style>
+        <script type="module">
+
+            class M8N1SpaceElement extends HTMLElement {
+
+            }
+
+            customElements.define('m8n1-space', M8N1SpaceElement);
+
+            class M8N1BoardElement extends HTMLElement {
+                connectedCallback(){
+                    const letters = 'abcdefgh';
+                    const numbers = '12345678';
+
+                    for(let i = 7; i >= 0; i--) {
+                        for(let j = 0; j < 8; j++) {
+                            const space = new M8N1SpaceElement();
+                            space.id = letters.charAt(j) + numbers.charAt(i);
+
+                            space.setAttribute('color', j % 2 === (i % 2 ? 0 : 1) ? 'white' : 'black');
+                            this.appendChild(space);
+                        }
+                    }
+                }
+            }
+
+            customElements.define('m8n1-board', M8N1BoardElement);
+        </script>
+    </head>
+    <body>
+        <m8n1-board></m8n1-board>
+    </body>
+</html>

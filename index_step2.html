@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+    <head>
+        <style>
+            html, body {
+                padding: 0;
+                margin: 0;
+                box-sizing: border-box;
+
+                width: 100%;
+                height: 100%;
+            }
+
+            body {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+            }
+
+            m8n1-board {
+                display: grid;
+                grid-template-columns: repeat(8, 1fr);
+                grid-template-rows: repeat(8, 1fr);
+
+                aspect-ratio: 1;
+            }
+
+            @media (orientation: landscape) {
+                m8n1-board {
+                    height: 80vh;
+                }
+            }
+
+            @media (orientation: portrait) {
+                m8n1-board {
+                    width: 80vw;
+                }
+            }
+
+            :root {
+                --space-white: #fff;
+                --space-black: #aaa;
+            }
+
+            m8n1-space[color=white] {
+                background-color: var(--space-white);
+            }
+
+            m8n1-space[color=black] {
+                background-color: var(--space-black);
+            }
+            
+        </style>
+        <script type="module">
+
+            const DEFAULT_BOARD = [
+                { space: 'a1', piece: 'rook',   player: 'white' },
+                { space: 'b1', piece: 'knight', player: 'white' },
+                { space: 'c1', piece: 'bishop', player: 'white' },
+                { space: 'd1', piece: 'queen',  player: 'white' },
+                { space: 'e1', piece: 'king',   player: 'white' },
+                { space: 'f1', piece: 'bishop', player: 'white' },
+                { space: 'g1', piece: 'knight', player: 'white' },
+                { space: 'h1', piece: 'rook',   player: 'white' },
+                { space: 'a2', piece: 'pawn',   player: 'white' },
+                { space: 'b2', piece: 'pawn',   player: 'white' },
+                { space: 'c2', piece: 'pawn',   player: 'white' },
+                { space: 'd2', piece: 'pawn',   player: 'white' },
+                { space: 'e2', piece: 'pawn',   player: 'white' },
+                { space: 'f2', piece: 'pawn',   player: 'white' },
+                { space: 'g2', piece: 'pawn',   player: 'white' },
+                { space: 'h2', piece: 'pawn',   player: 'white' },
+
+                { space: 'a8', piece: 'rook',   player: 'black' },
+                { space: 'b8', piece: 'knight', player: 'black' },
+                { space: 'c8', piece: 'bishop', player: 'black' },
+                { space: 'd8', piece: 'queen',  player: 'black' },
+                { space: 'e8', piece: 'king',   player: 'black' },
+                { space: 'f8', piece: 'bishop', player: 'black' },
+                { space: 'g8', piece: 'knight', player: 'black' },
+                { space: 'h8', piece: 'rook',   player: 'black' },
+                { space: 'a7', piece: 'pawn',   player: 'black' },
+                { space: 'b7', piece: 'pawn',   player: 'black' },
+                { space: 'c7', piece: 'pawn',   player: 'black' },
+                { space: 'd7', piece: 'pawn',   player: 'black' },
+                { space: 'e7', piece: 'pawn',   player: 'black' },
+                { space: 'f7', piece: 'pawn',   player: 'black' },
+                { space: 'g7', piece: 'pawn',   player: 'black' },
+                { space: 'h7', piece: 'pawn',   player: 'black' },
+            ];
+
+            class M8N1SpaceElement extends HTMLElement {
+                get color() {
+                    return this.getAttribute('color');
+                }
+
+                set color(v) {
+                    return this.setAttribute('color', v);
+                }
+
+                get piece() {
+                    return this.getAttribute('piece');
+                }
+
+                set piece(v) {
+                    return this.setAttribute('piece', v);
+                }
+
+                get player() {
+                    return this.getAttribute('player');
+                }
+
+                set player(v) {
+                    return this.setAttribute('player', v);
+                }
+            }
+
+            customElements.define('m8n1-space', M8N1SpaceElement);
+
+            class M8N1BoardElement extends HTMLElement {
+                #spaces = {};
+
+                connectedCallback(){
+                    const letters = 'abcdefgh';
+                    const numbers = '12345678';
+
+                    for(let i = 7; i >= 0; i--) {
+                        for(let j = 0; j < 8; j++) {
+                            const space = new M8N1SpaceElement();
+                            space.id = letters.charAt(j) + numbers.charAt(i);
+
+                            space.color = (i + j) % 2 ? 'white' : 'black';
+                            this.appendChild(space);
+
+                            this.#spaces[space.id] = space;
+                        }
+                    }
+
+                    for(const {space, piece, player } of DEFAULT_BOARD) {
+                        const element = this.#spaces[space];
+
+                        element.piece = piece;
+                        element.player = player;
+                    }
+                }
+            }
+
+            customElements.define('m8n1-board', M8N1BoardElement);
+        </script>
+    </head>
+    <body>
+        <m8n1-board></m8n1-board>
+    </body>
+</html>
